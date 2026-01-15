@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Achievement Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        .stat-card {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h3 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .achievement-list {
+            padding: 30px;
+        }
+        
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 5px solid #fbbf24;
+        }
+        
+        .achievement-icon {
+            font-size: 2.5rem;
+            margin-right: 20px;
+            background: white;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .achievement-content {
+            flex: 1;
+        }
+        
+        .achievement-content h4 {
+            font-size: 1.2rem;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+        
+        .user-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+        
+        .bonus-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f1f5f9;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        /* Loading animation */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .achievement-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .achievement-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 Achievement Tracker</h1>
+            <p>PerfectPanel Achievement System - Real-time Data</p>
+        </div>
+        
+        <div class="stats-grid" id="stats">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading statistics...</p>
+            </div>
+        </div>
+        
+        <div class="achievement-list">
+            <h2 style="margin-bottom: 20px; color: #1e293b;">📋 Recent Achievements</h2>
+            <div id="achievements">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading achievements...</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>📊 System Status: <span id="status">🟢 Connected</span></p>
+            <p>PerfectPanel Achievement Tracking System</p>
+        </div>
+    </div>
+
+    <script>
+    // API URL - ไฟล์เก็บข้อมูล
+    const DATA_URL = 'https://raw.githubusercontent.com/YOUR_USERNAME/perfectpanel-achievements/main/data.json';
+    
+    // Load data function
+    async function loadData() {
+        try {
+            // อัพเดทสถานะ
+            document.getElementById('status').innerHTML = '🔄 Loading data...';
+            
+            // ดึงข้อมูลจาก GitHub
+            const response = await fetch(DATA_URL + '?t=' + Date.now());
+            
+            if (!response.ok) {
+                throw new Error('Failed to load data');
+            }
+            
+            const achievements = await response.json();
+            
+            // คำนวณสถิติ
+            const total = achievements.length;
+            const uniqueUsers = [...new Set(achievements.map(a => a.user_id))].length;
+            const totalBonus = achievements.reduce((sum, a) => sum + (parseInt(a.bonus) || 0), 0);
+            const today = achievements.filter(a => {
+                const date = new Date(a.unlocked_at);
+                const today = new Date();
+                return date.toDateString() === today.toDateString();
+            }).length;
+            
+            // แสดงสถิติ
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-card">
+                    <h3>${total}</h3>
+                    <p>Total Achievements</p>
+                </div>
+                <div class="stat-card">
+                    <h3>${uniqueUsers}</h3>
+                    <p>Unique Users</p>
+                </div>
+                <div class="stat-card">
+                    <h3>${totalBonus}฿</h3>
+                    <p>Total Bonus</p>
+                </div>
+                <div class="stat-card">
+                    <h3>${today}</h3>
+                    <p>Today</p>
+                </div>
+            `;
+            
+            // แสดง achievements ล่าสุด (20 อัน)
+            const recent = achievements.slice(-20).reverse();
+            
+            document.getElementById('achievements').innerHTML = recent.length > 0 
+                ? recent.map(ach => `
+                    <div class="achievement-item">
+                        <div class="achievement-icon">${ach.icon || '🏆'}</div>
+                        <div class="achievement-content">
+                            <h4>
+                                ${ach.achievement_name}
+                                <span class="user-badge">${ach.username || 'Anonymous'}</span>
+                            </h4>
+                            <p style="color: #64748b; margin-bottom: 8px;">
+                                ${new Date(ach.unlocked_at).toLocaleString('th-TH')}
+                                ${ach.ip ? ` • IP: ${ach.ip}` : ''}
+                            </p>
+                        </div>
+                        <div class="bonus-badge">+${ach.bonus || 0}฿</div>
+                    </div>
+                `).join('')
+                : `<div style="text-align: center; padding: 40px; color: #64748b;">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">📭</div>
+                    <h3>No achievements yet</h3>
+                    <p>Waiting for data from PerfectPanel...</p>
+                </div>`;
+            
+            // อัพเดทสถานะ
+            document.getElementById('status').innerHTML = `🟢 Updated: ${new Date().toLocaleTimeString()}`;
+            
+        } catch (error) {
+            console.error('Error loading data:', error);
+            
+            // แสดง error
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-card" style="grid-column: 1 / -1; background: #fee2e2; border-color: #fca5a5;">
+                    <h3>⚠️</h3>
+                    <p>Failed to load data</p>
+                    <p style="font-size: 0.9rem; color: #dc2626; margin-top: 10px;">
+                        Check if data.json exists in repository
+                    </p>
+                </div>
+            `;
+            
+            document.getElementById('status').innerHTML = '🔴 Connection failed';
+        }
+    }
+    
+    // โหลดข้อมูลเมื่อหน้าเว็บโหลด
+    document.addEventListener('DOMContentLoaded', loadData);
+    
+    // รีเฟรชข้อมูลทุก 10 วินาที
+    setInterval(loadData, 10000);
+    </script>
+</body>
+</html>
