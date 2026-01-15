@@ -1,24 +1,35 @@
 [
   {
-    "user_id": "demo_user_001",
-    "username": "Demo Player",
+    "user_id": "user_001",
+    "username": "First Player",
     "achievement_id": "first_deposit",
-    "achievement_name": "ฝากเงินครั้งแรก!",
-    "bonus": 10,
+    "achievement_name": "💰 ฝากเงินครั้งแรก!",
+    "bonus": 50,
     "icon": "💰",
-    "unlocked_at": "2024-01-15 10:30:00",
+    "unlocked_at": "2024-01-16 14:30:00",
     "ip": "127.0.0.1",
-    "timestamp": 1705300200
+    "timestamp": 1705401000
   },
   {
-    "user_id": "demo_user_002",
-    "username": "Test User",
-    "achievement_id": "first_order",
-    "achievement_name": "สั่งบริการครั้งแรก",
-    "bonus": 15,
-    "icon": "🚀",
-    "unlocked_at": "2024-01-15 11:45:00",
+    "user_id": "user_002",
+    "username": "VIP Member",
+    "achievement_id": "big_depositor",
+    "achievement_name": "💸 ยอดฝากครบ 10,000฿",
+    "bonus": 200,
+    "icon": "💸",
+    "unlocked_at": "2024-01-16 15:45:00",
     "ip": "127.0.0.1",
-    "timestamp": 1705304700
+    "timestamp": 1705405500
+  },
+  {
+    "user_id": "user_003",
+    "username": "Active User",
+    "achievement_id": "first_order",
+    "achievement_name": "🚀 สั่งบริการครั้งแรก",
+    "bonus": 100,
+    "icon": "🚀",
+    "unlocked_at": "2024-01-16 16:20:00",
+    "ip": "127.0.0.1",
+    "timestamp": 1705407600
   }
 ]
