@@ -1,0 +1,24 @@
+[
+  {
+    "user_id": "demo_user_001",
+    "username": "Demo Player",
+    "achievement_id": "first_deposit",
+    "achievement_name": "ฝากเงินครั้งแรก!",
+    "bonus": 10,
+    "icon": "💰",
+    "unlocked_at": "2024-01-15 10:30:00",
+    "ip": "127.0.0.1",
+    "timestamp": 1705300200
+  },
+  {
+    "user_id": "demo_user_002",
+    "username": "Test User",
+    "achievement_id": "first_order",
+    "achievement_name": "สั่งบริการครั้งแรก",
+    "bonus": 15,
+    "icon": "🚀",
+    "unlocked_at": "2024-01-15 11:45:00",
+    "ip": "127.0.0.1",
+    "timestamp": 1705304700
+  }
+]
